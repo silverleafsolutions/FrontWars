@@ -354,6 +354,7 @@ export type AllianceRequest = {
   requestor(): Player;
   recipient(): Player;
   createdAt(): Tick;
+  status(): "pending" | "accepted" | "rejected";
 };
 
 export type Alliance = {
