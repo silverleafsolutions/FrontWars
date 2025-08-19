@@ -66,6 +66,10 @@ export class TerritoryPatternsModal extends LitElement {
   }
 
   async onUserMe(userMeResponse: UserMeResponse | null) {
+    if (userMeResponse === null) {
+      this.userSettings.setSelectedPatternName(undefined);
+      this.selectedPattern = undefined;
+    }
     this.patterns = await patterns(userMeResponse);
     this.me = userMeResponse;
     this.requestUpdate();
