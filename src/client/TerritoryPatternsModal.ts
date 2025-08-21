@@ -144,7 +144,7 @@ export class TerritoryPatternsModal extends LitElement {
           @mouseleave=${() => this.handleMouseLeave()}
         >
           <div class="text-sm font-bold mb-1">
-            ${translateText(`territory_patterns.pattern.${pattern.name}`)}
+            ${translatePatternName("territory_patterns.pattern", pattern.name)}
           </div>
           <div
             class="preview-container"
@@ -410,4 +410,13 @@ export function generatePreviewDataUrl(
   const dataUrl = canvas.toDataURL("image/png");
   patternCache.set(pattern, dataUrl);
   return dataUrl;
+}
+
+function translatePatternName(prefix: string, patternName: string): string {
+  const translation = translateText(`${prefix}.${patternName}`);
+  if (translation.startsWith(prefix)) {
+    // Translation was not found, fallback to pattern name
+    return patternName[0].toUpperCase() + patternName.substring(1);
+  }
+  return translation;
 }
