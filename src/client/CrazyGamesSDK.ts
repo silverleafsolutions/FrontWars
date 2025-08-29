@@ -6,6 +6,8 @@ declare global {
 }
 
 function isWithinCrazyGames(): boolean {
+  return true; // force enable for now
+
   try {
     const urlParams = new URLSearchParams(self.location.search);
     if (urlParams.has("crazygames")) return true;
