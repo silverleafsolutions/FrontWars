@@ -39,6 +39,7 @@ import { getClientID } from "../core/Util";
 import { getServerConfigFromClient } from "../core/configuration/ConfigLoader";
 import { joinLobby } from "./ClientGameRunner";
 import version from "../../resources/version.txt";
+import { CrazySDK } from "./CrazyGamesSDK";
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -54,7 +55,6 @@ declare global {
       spaAddAds: (ads: Array<{ type: string; selectorId: string }>) => void;
       destroyUnits: (adType: string) => void;
       settings?: {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         slots?: any;
       };
       spaNewPage: (url: string) => void;
@@ -305,7 +305,7 @@ class Client {
       } else if (userMeResponse === false) {
         // Not logged in
         loginDiscordButton.disable = false;
-        loginDiscordButton.hidden = false;
+        loginDiscordButton.hidden = true; // TODO: Remove this once we have a way to login
         loginDiscordButton.translationKey = "main.login_discord";
         logoutDiscordButton.hidden = true;
         territoryModal.onUserMe(null);
@@ -513,11 +513,16 @@ class Client {
         ) as GameStartingModal;
         startingModal instanceof GameStartingModal;
         startingModal.show();
+        // Notify SDK that load is complete (safe no-op if not CrazyGames)
+        CrazySDK.gameLoadComplete();
       },
       () => {
         this.joinModal?.close();
         this.publicLobby?.stop();
         incrementGamesPlayed();
+
+        // Gameplay started
+        CrazySDK.gameplayStart();
 
         try {
           window.PageOS.session.newPageView();
@@ -544,6 +549,9 @@ class Client {
     this.gameStop();
     this.gameStop = null;
     this.publicLobby?.leaveLobby();
+
+    // Gameplay stopped
+    CrazySDK.gameplayStop();
   }
 
   private handleKickPlayer(event: CustomEvent<KickPlayerEvent>) {
@@ -558,6 +566,8 @@ class Client {
 
 // Initialize the client when the DOM is loaded
 document.addEventListener("DOMContentLoaded", () => {
+  // Initialize CrazyGames SDK if present (non-blocking)
+  void CrazySDK.init();
   new Client().initialize();
 });
 

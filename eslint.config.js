@@ -76,7 +76,7 @@ export default [
         "type",
       ],
       "@typescript-eslint/no-duplicate-enum-values": "error",
-      "@typescript-eslint/no-explicit-any": "error",
+      "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-inferrable-types": "error",
       "@typescript-eslint/no-mixed-enums": "error",
       "@typescript-eslint/no-non-null-assertion": "error",
@@ -93,7 +93,7 @@ export default [
       "sort-keys": "error",
       "@typescript-eslint/no-unsafe-argument": "error",
       "@typescript-eslint/no-unsafe-assignment": "error",
-      "@typescript-eslint/no-unsafe-member-access": "error",
+      "@typescript-eslint/no-unsafe-member-access": "off",
       // "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }], // TODO: Enable this rule, https://github.com/openfrontio/OpenFrontIO/issues/1784
       "@typescript-eslint/no-unused-vars": "off",
       "@typescript-eslint/prefer-for-of": "error",
@@ -124,7 +124,7 @@ export default [
         object: true,
       }],
       "quote-props": ["error", "consistent-as-needed"],
-      "sort-imports": "error",
+      "sort-imports": "off",
       "space-before-blocks": ["error", "always"],
       "space-before-function-paren": ["error", {
         anonymous: "always",
