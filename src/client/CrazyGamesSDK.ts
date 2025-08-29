@@ -54,14 +54,22 @@ class CrazyGamesSDKManager {
   }
 
   gameplayStart(): void {
-    if (this.isCrazyGames && window.CrazyGames?.SDK?.game?.gameplayStart) {
-      window.CrazyGames.SDK.game.gameplayStart();
+    try {
+      if (this.isCrazyGames && window.CrazyGames?.SDK?.game?.gameplayStart) {
+        window.CrazyGames.SDK.game.gameplayStart();
+      }
+    } catch (error) {
+      console.log("CrazyGames SDK: ", error);
     }
   }
 
   gameplayStop(): void {
-    if (this.isCrazyGames && window.CrazyGames?.SDK?.game?.gameplayStop) {
-      window.CrazyGames.SDK.game.gameplayStop();
+    try {
+      if (this.isCrazyGames && window.CrazyGames?.SDK?.game?.gameplayStop) {
+        window.CrazyGames.SDK.game.gameplayStop();
+      }
+    } catch (error) {
+      console.log("CrazyGames SDK: ", error);
     }
   }
 
