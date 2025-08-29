@@ -77,6 +77,14 @@
       .component-hideable:has(> .parent-hidden) {
         display: none;
       }
+
+      /* Hide side banners on small screens */
+      @media (max-width: 928px) {
+        #cg-banner-left,
+        #cg-banner-right {
+          display: none !important;
+        }
+      }
     </style>
 
     <!-- Immediate execution to prevent FOUC -->
