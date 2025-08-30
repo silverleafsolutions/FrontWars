@@ -54,6 +54,18 @@
         opacity: 0;
       }
 
+      /* Prevent vertical scrolling on main page */
+      html,
+      body {
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      main {
+        height: 100%;
+        overflow: hidden;
+      }
+
       .bg-image {
         content: "";
         background-image: url("/images/EuropeBackground.webp");
@@ -84,6 +96,45 @@
         #cg-banner-right {
           display: none !important;
         }
+      }
+
+      /* Scale container based on screen height */
+      .scale-container {
+        transform-origin: center;
+        transition: transform 0.3s ease-in-out;
+      }
+
+      /* Scale down scale-container on smaller heights */
+      @media (max-height: 800px) {
+        .scale-container {
+          transform: scale(0.8);
+        }
+      }
+
+      @media (max-height: 700px) {
+        .scale-container {
+          transform: scale(0.65);
+        }
+      }
+
+      @media (max-height: 600px) {
+        .scale-container {
+          transform: scale(0.6);
+        }
+      }
+
+      @media (max-height: 500px) {
+        .scale-container {
+          transform: scale(0.5);
+        }
+      }
+
+      /* Ensure footer stays at bottom without causing overflow */
+      .l-footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        z-index: 10;
       }
     </style>
 
@@ -202,7 +253,9 @@
 
     <!-- Main container with responsive padding -->
     <main class="flex justify-center flex-grow">
-      <div class="w-full flex justify-center gap-4 pt-12">
+      <div
+        class="scale-container w-full flex justify-center items-center gap-4"
+      >
         <!-- CrazyGames banners: left and right integrated in layout -->
         <div
           id="cg-banner-left"

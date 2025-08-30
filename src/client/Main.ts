@@ -104,7 +104,7 @@ class Client {
     if (!gameVersion) {
       console.warn("Game version element not found");
     }
-    gameVersion.innerText = version;
+    // gameVersion.innerText = version;
 
     const newsModal = document.querySelector("news-modal") as NewsModal;
     if (!newsModal) {
