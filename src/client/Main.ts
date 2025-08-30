@@ -98,12 +98,12 @@ class Client {
   constructor() {}
 
   initialize(): void {
-    const gameVersion = document.getElementById(
-      "game-version",
-    ) as HTMLDivElement;
-    if (!gameVersion) {
-      console.warn("Game version element not found");
-    }
+    // const gameVersion = document.getElementById(
+    //   "game-version",
+    // ) as HTMLDivElement;
+    // if (!gameVersion) {
+    //   console.warn("Game version element not found");
+    // }
     // gameVersion.innerText = version;
 
     const newsModal = document.querySelector("news-modal") as NewsModal;
