@@ -28,6 +28,7 @@ import { getServerConfigFromClient } from "../core/configuration/ConfigLoader";
 import randomMap from "../../resources/images/RandomMap.webp";
 import { renderUnitTypeOptions } from "./utilities/RenderUnitTypeOptions";
 import { translateText } from "../client/Utils";
+import { CrazySDK } from "./CrazyGamesSDK";
 
 @customElement("host-lobby-modal")
 export class HostLobbyModal extends LitElement {
@@ -545,6 +546,8 @@ export class HostLobbyModal extends LitElement {
             composed: true,
           }),
         );
+        // Show invite button after lobby is created
+        this.showInvite();
       });
     this.modalEl?.open();
     this.playersInterval = setInterval(() => this.pollPlayers(), 1000);
@@ -562,6 +565,8 @@ export class HostLobbyModal extends LitElement {
       clearTimeout(this.botsUpdateTimer);
       this.botsUpdateTimer = null;
     }
+    // Hide invite button when closing
+    this.hideInvite();
   }
 
   private async handleRandomMapToggle() {
@@ -697,6 +702,10 @@ export class HostLobbyModal extends LitElement {
         GameMapType[this.selectedMap as keyof typeof GameMapType]} ${
         this.useRandomMap ? " (Randomly selected)" : ""}`,
     );
+
+    // Hide invite button when game starts
+    this.hideInvite();
+
     this.close();
     const config = await getServerConfigFromClient();
     const response = await fetch(
@@ -752,6 +761,27 @@ export class HostLobbyModal extends LitElement {
         composed: true,
       }),
     );
+  }
+
+  private showInvite() {
+    if (!this.lobbyId) return;
+
+    const inviteParams = {
+      roomId: this.lobbyId,
+    };
+
+    // Show the CrazyGames invite button
+    CrazySDK.showInviteButton(inviteParams, (error, link) => {
+      if (error) {
+        console.log("Invite button error:", error);
+      } else {
+        console.log("Invite button shown with link:", link);
+      }
+    });
+  }
+
+  private hideInvite() {
+    CrazySDK.hideInviteButton();
   }
 }
 

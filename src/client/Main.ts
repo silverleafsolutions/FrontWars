@@ -386,6 +386,9 @@ class Client {
     // Attempt to join lobby
     this.handleHash();
 
+    // Check for CrazyGames invite parameters on page load
+    this.handleInviteParams();
+
     const onHashUpdate = () => {
       // Reset the UI to its initial state
       this.joinModal?.close();
@@ -445,6 +448,28 @@ class Client {
         this.joinModal?.open(lobbyId);
         console.log(`joining lobby ${lobbyId}`);
       }
+    }
+
+    // Handle CrazyGames invite parameters from URL search params
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomId = urlParams.get("roomId");
+    if (roomId && ID.safeParse(roomId).success) {
+      console.log(`Joining via invite link: ${roomId}`);
+      this.joinModal?.open(roomId);
+    }
+  }
+
+  private handleInviteParams() {
+    // Check for CrazyGames invite parameters in URL search params
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomId = urlParams.get("roomId");
+
+    if (roomId && ID.safeParse(roomId).success) {
+      console.log(`Joining via invite link: ${roomId}`);
+      // Wait for the UI to be ready before opening the join modal
+      setTimeout(() => {
+        this.joinModal?.open(roomId);
+      }, 100);
     }
   }
 

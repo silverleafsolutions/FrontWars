@@ -73,6 +73,66 @@ class CrazyGamesSDKManager {
     }
   }
 
+  // Invite functionality
+  inviteLink(params: Record<string, any>, callback: (error: any, link: string) => void): void {
+    try {
+      if (this.isCrazyGames && window.CrazyGames?.SDK?.game?.inviteLink) {
+        window.CrazyGames.SDK.game.inviteLink(params, callback);
+      } else {
+        // Fallback for non-CrazyGames environment
+        const url = new URL(window.location.href);
+        Object.entries(params).forEach(([key, value]) => {
+          url.searchParams.set(key, String(value));
+        });
+        callback(null, url.toString());
+      }
+    } catch (error) {
+      console.log("CrazyGames inviteLink error:", error);
+      callback(error, "");
+    }
+  }
+
+  showInviteButton(params: Record<string, any>, callback: (error: any, link: string) => void): void {
+    try {
+      if (this.isCrazyGames && window.CrazyGames?.SDK?.game?.showInviteButton) {
+        window.CrazyGames.SDK.game.showInviteButton(params, callback);
+      } else {
+        // Fallback for non-CrazyGames environment
+        console.log("Invite button would show with params:", params);
+        callback(null, "");
+      }
+    } catch (error) {
+      console.log("CrazyGames showInviteButton error:", error);
+      callback(error, "");
+    }
+  }
+
+  hideInviteButton(): void {
+    try {
+      if (this.isCrazyGames && window.CrazyGames?.SDK?.game?.hideInviteButton) {
+        window.CrazyGames.SDK.game.hideInviteButton();
+      }
+    } catch (error) {
+      console.log("CrazyGames hideInviteButton error:", error);
+    }
+  }
+
+  getInviteParam(param: string, callback: (error: any, value: string) => void): void {
+    try {
+      if (this.isCrazyGames && window.CrazyGames?.SDK?.game?.getInviteParam) {
+        window.CrazyGames.SDK.game.getInviteParam(param, callback);
+      } else {
+        // Fallback for non-CrazyGames environment
+        const urlParams = new URLSearchParams(window.location.search);
+        const value = urlParams.get(param) || "";
+        callback(null, value);
+      }
+    } catch (error) {
+      console.log("CrazyGames getInviteParam error:", error);
+      callback(error, "");
+    }
+  }
+
   async requestMidGameAd(callback: () => void): Promise<void> {
     if (!this.isCrazyGames || !window.CrazyGames?.SDK?.ad?.requestAd) {
       callback();
