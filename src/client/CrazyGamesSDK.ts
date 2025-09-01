@@ -6,8 +6,6 @@ declare global {
 }
 
 function isWithinCrazyGames(): boolean {
-  return true; // force enable for now
-
   try {
     const urlParams = new URLSearchParams(self.location.search);
     if (urlParams.has("crazygames")) return true;
@@ -26,7 +24,7 @@ class CrazyGamesSDKManager {
   private isInitialized = false;
 
   async init(): Promise<void> {
-    console.log("init", this.isCrazyGames, this.isInitialized);
+    console.log("[CrazyGames SDK] isCrazyGames: ", this.isCrazyGames);
     if (!this.isCrazyGames || this.isInitialized) return;
 
     await new Promise<void>((resolve, reject) => {
