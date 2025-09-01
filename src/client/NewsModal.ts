@@ -81,16 +81,6 @@ export class NewsModal extends LitElement {
             </div>
           </div>
         </div>
-
-        <div>
-          ${translateText("news.see_all_releases")}
-          <a
-            href="https://github.com/openfrontio/OpenFrontIO/releases"
-            target="_blank"
-            >${translateText("news.github_link")}</a
-          >.
-        </div>
-
         <o-button
           title=${translateText("common.close")}
           @click=${this.close}
