@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
 import { LitElement, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { translateText } from "../client/Utils";
@@ -6,7 +6,7 @@ import { translateText } from "../client/Utils";
 @customElement("language-modal")
 export class LanguageModal extends LitElement {
   @property({ type: Boolean }) visible = false;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   @property({ type: Array }) languageList: any[] = [];
   @property({ type: String }) currentLang = "en";
 
@@ -116,7 +116,7 @@ export class LanguageModal extends LitElement {
                 >
                   <img
                     src="/flags/${lang.svg}.svg"
-                    class="w-6 h-4 object-contain"
+                    class="w-12 h-8 object-contain"
                     alt="${lang.code}"
                   />
                   <span>${lang.native} (${lang.en})</span>

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import "./LanguageModal";
 import { LitElement, html } from "lit";
@@ -39,14 +39,13 @@ export class LangSelector extends LitElement {
   @state() public translations: Record<string, string> | undefined;
   @state() public defaultTranslations: Record<string, string> | undefined;
   @state() public currentLang = "en";
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   @state() private languageList: any[] = [];
   @state() private showModal = false;
   @state() private debugMode = false;
 
   private debugKeyPressed = false;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private readonly languageMap: Record<string, any> = {
     ar,
     bg,
@@ -137,7 +136,7 @@ export class LangSelector extends LitElement {
   private async loadLanguageList() {
     try {
       const data = this.languageMap;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       let list: any[] = [];
 
       const browserLang = new Intl.Locale(navigator.language).language;
@@ -154,7 +153,6 @@ export class LangSelector extends LitElement {
         });
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let debugLang: any = null;
       if (this.debugKeyPressed) {
         debugLang = {
@@ -186,7 +184,6 @@ export class LangSelector extends LitElement {
 
       list.sort((a, b) => a.en.localeCompare(b.en));
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const finalList: any[] = [];
       if (currentLangEntry) finalList.push(currentLangEntry);
       if (englishEntry) finalList.push(englishEntry);
@@ -247,9 +244,9 @@ export class LangSelector extends LitElement {
 
     components.forEach((tag) => {
       document.querySelectorAll(tag).forEach((el) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         if (typeof (el as any).requestUpdate === "function") {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
           (el as any).requestUpdate();
         }
       });
@@ -307,14 +304,14 @@ export class LangSelector extends LitElement {
           @click=${this.openModal}
           class="text-center appearance-none w-full bg-blue-100
           dark:bg-gray-700 hover:bg-blue-200 dark:hover:bg-gray-600
-          text-blue-900 dark:text-gray-100 p-3 sm:p-4 lg:p-5 font-medium
+          text-blue-900 dark:text-gray-100 p-3 font-medium
           text-sm sm:text-base lg:text-lg rounded-md border-none cursor-pointer
           transition-colors duration-300 flex items-center gap-2
           justify-center"
         >
           <img
             id="lang-flag"
-            class="w-6 h-4"
+            class="w-12 h-8"
             src="/flags/${currentLang.svg}.svg"
             alt="flag"
           />
@@ -336,7 +333,7 @@ export class LangSelector extends LitElement {
 }
 
 function flattenTranslations(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   obj: Record<string, any>,
   parentKey = "",
   result: Record<string, string> = {},

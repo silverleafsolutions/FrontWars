@@ -291,7 +291,6 @@
               class="w-[20%] md:w-[15%] component-hideable"
             ></news-button>
           </div>
-          <div></div>
           <div>
             <public-lobby class="block"></public-lobby>
           </div>
@@ -521,18 +520,13 @@
         }
 
         function computeScale() {
-          var gc = gcd();
-          var initial_scale = 1;
-          var w = 16;
-          var h = 9;
-
-          if ((gc * window.innerWidth) / (gc * window.innerHeight) > w / h) {
-            initial_scale = vh(27) / 200;
-          } else {
-            initial_scale = (h * vw(27)) / w / 200;
-          }
-
-          return Math.min(1, initial_scale);
+          var height = Math.max(
+            document.documentElement.clientHeight,
+            window.innerHeight || 0,
+          );
+          var baseHeight = 928;
+          if (height >= baseHeight) return 1;
+          return Math.min(1, height / baseHeight);
         }
 
         var ticking = false;
