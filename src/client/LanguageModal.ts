@@ -24,13 +24,6 @@ export class LanguageModal extends LitElement {
   };
 
   updated(changedProps: Map<string, unknown>) {
-    if (changedProps.has("visible")) {
-      if (this.visible) {
-        document.body.style.overflow = "hidden";
-      } else {
-        document.body.style.overflow = "auto";
-      }
-    }
   }
 
   connectedCallback() {
@@ -41,7 +34,6 @@ export class LanguageModal extends LitElement {
   disconnectedCallback() {
     super.disconnectedCallback();
     window.removeEventListener("keydown", this.handleKeyDown);
-    document.body.style.overflow = "auto";
   }
 
   private readonly handleKeyDown = (e: KeyboardEvent) => {

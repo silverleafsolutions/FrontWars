@@ -48,7 +48,6 @@ export class UserSettingModal extends LitElement {
   disconnectedCallback() {
     window.removeEventListener("keydown", this.handleKeyDown);
     super.disconnectedCallback();
-    document.body.style.overflow = "auto";
   }
 
   private readonly handleKeyDown = (e: KeyboardEvent) => {
