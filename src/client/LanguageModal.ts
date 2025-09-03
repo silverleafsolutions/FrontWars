@@ -1,7 +1,8 @@
 
 import { LitElement, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, query } from "lit/decorators.js";
 import { translateText } from "../client/Utils";
+import { OModal } from "./components/baseComponents/Modal";
 
 @customElement("language-modal")
 export class LanguageModal extends LitElement {
@@ -10,18 +11,27 @@ export class LanguageModal extends LitElement {
   @property({ type: Array }) languageList: any[] = [];
   @property({ type: String }) currentLang = "en";
 
+  @query("o-modal") modalEl?: OModal;
+
   createRenderRoot() {
     return this; // Use Light DOM for TailwindCSS classes
   }
 
-  private readonly close = () => {
+  public open() {
+    this.visible = true;
+    this.modalEl?.open();
+  }
+
+  public close() {
+    this.visible = false;
+    this.modalEl?.close();
     this.dispatchEvent(
       new CustomEvent("close-modal", {
         bubbles: true,
         composed: true,
       }),
     );
-  };
+  }
 
   updated(changedProps: Map<string, unknown>) {
   }
@@ -54,70 +64,51 @@ export class LanguageModal extends LitElement {
   };
 
   render() {
-    if (!this.visible) return null;
-
     return html`
-      <aside
-        class="fixed p-4 z-[1000] inset-0 bg-black/50 overflow-y-auto flex items-center justify-center"
+      <o-modal 
+        title=${translateText("select_lang.title")}
+        @modal-close=${this.close}
       >
-        <div
-          class="bg-gray-800/80 dark:bg-gray-900/90 backdrop-blur-md rounded-lg min-w-[340px] max-w-[480px] w-full"
-        >
-          <header
-            class="relative rounded-t-md text-lg bg-black/60 dark:bg-black/80 text-center text-white px-6 py-4 pr-10"
-          >
-            ${translateText("select_lang.title")}
-            <div
-              class="cursor-pointer absolute right-4 top-4 font-bold hover:text-gray-300"
-              @click=${this.close}
-            >
-              ✕
-            </div>
-          </header>
+        <div class="language-list">
+          ${this.languageList.map((lang) => {
+            const isActive = this.currentLang === lang.code;
+            const isDebug = lang.code === "debug";
 
-          <section
-            class="relative text-white dark:text-gray-100 p-6 max-h-[60dvh] overflow-y-auto"
-          >
-            ${this.languageList.map((lang) => {
-              const isActive = this.currentLang === lang.code;
-              const isDebug = lang.code === "debug";
+            let buttonClasses =
+              "w-full flex items-center gap-2 p-2 mb-2 rounded-md transition-colors duration-300 border";
 
-              let buttonClasses =
-                "w-full flex items-center gap-2 p-2 mb-2 rounded-md transition-colors duration-300 border";
+            if (isDebug) {
+              buttonClasses +=
+                " animate-pulse font-bold text-white border-2 border-dashed border-cyan-400 shadow-lg" +
+                " shadow-cyan-400/25 bg-gradient-to-r from-red-600 via-yellow-600 via-green-600 via-blue-600" +
+                " to-purple-600";
+            } else if (isActive) {
+              buttonClasses +=
+                " bg-gray-400 dark:bg-gray-500 border-gray-300 dark:border-gray-400 text-black dark:text-white";
+            } else {
+              buttonClasses +=
+                " bg-gray-600 dark:bg-gray-700 border-gray-500 dark:border-gray-600 text-white dark:text-gray-100" +
+                " hover:bg-gray-500 dark:hover:bg-gray-600";
+            }
 
-              if (isDebug) {
-                buttonClasses +=
-                  " animate-pulse font-bold text-white border-2 border-dashed border-cyan-400 shadow-lg" +
-                  " shadow-cyan-400/25 bg-gradient-to-r from-red-600 via-yellow-600 via-green-600 via-blue-600" +
-                  " to-purple-600";
-              } else if (isActive) {
-                buttonClasses +=
-                  " bg-gray-400 dark:bg-gray-500 border-gray-300 dark:border-gray-400 text-black dark:text-white";
-              } else {
-                buttonClasses +=
-                  " bg-gray-600 dark:bg-gray-700 border-gray-500 dark:border-gray-600 text-white dark:text-gray-100" +
-                  " hover:bg-gray-500 dark:hover:bg-gray-600";
-              }
-
-              return html`
-                <button
-                  class="${buttonClasses}"
-                  @click=${() =>
-                  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-                    this.selectLanguage(lang.code)}
-                >
-                  <img
-                    src="/flags/${lang.svg}.svg"
-                    class="w-12 h-8 object-contain"
-                    alt="${lang.code}"
-                  />
-                  <span>${lang.native} (${lang.en})</span>
-                </button>
-              `;
-            })}
-          </section>
+            return html`
+              <button
+                class="${buttonClasses}"
+                @click=${() =>
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+                  this.selectLanguage(lang.code)}
+              >
+                <img
+                  src="/flags/${lang.svg}.svg"
+                  class="w-12 h-8 object-contain"
+                  alt="${lang.code}"
+                />
+                <span>${lang.native} (${lang.en})</span>
+              </button>
+            `;
+          })}
         </div>
-      </aside>
+      </o-modal>
     `;
   }
 }

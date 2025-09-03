@@ -1,6 +1,7 @@
 
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import "./LanguageModal";
+import { LanguageModal } from "./LanguageModal";
 import { LitElement, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
@@ -86,6 +87,7 @@ export class LangSelector extends LitElement {
     super.connectedCallback();
     this.setupDebugKey();
     this.initializeLanguage();
+    this.setupModalEventListeners();
   }
 
   private setupDebugKey() {
@@ -95,6 +97,31 @@ export class LangSelector extends LitElement {
     window.addEventListener("keyup", (e) => {
       if (e.key.toLowerCase() === "t") this.debugKeyPressed = false;
     });
+  }
+
+  private readonly languageSelectedHandler = (e: Event) => {
+    const customEvent = e as CustomEvent;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    this.changeLanguage(customEvent.detail.lang);
+  };
+
+  private readonly closeModalHandler = () => {
+    this.showModal = false;
+  };
+
+  private setupModalEventListeners() {
+    // Listen for language selection from the external modal
+    document.addEventListener("language-selected", this.languageSelectedHandler);
+
+    // Listen for modal close from the external modal
+    document.addEventListener("close-modal", this.closeModalHandler);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    // Clean up event listeners
+    document.removeEventListener("language-selected", this.languageSelectedHandler);
+    document.removeEventListener("close-modal", this.closeModalHandler);
   }
 
   private getClosestSupportedLang(lang: string): string {
@@ -204,6 +231,12 @@ export class LangSelector extends LitElement {
     this.currentLang = lang;
     this.applyTranslation();
     this.showModal = false;
+
+    // Close the external language modal
+    const languageModal = document.querySelector("language-modal") as LanguageModal;
+    if (languageModal) {
+      languageModal.close();
+    }
   }
 
   private applyTranslation() {
@@ -279,6 +312,14 @@ export class LangSelector extends LitElement {
     this.debugMode = this.debugKeyPressed;
     this.showModal = true;
     this.loadLanguageList();
+
+    // Show the external language modal
+    const languageModal = document.querySelector("language-modal") as LanguageModal;
+    if (languageModal) {
+      languageModal.languageList = this.languageList;
+      languageModal.currentLang = this.currentLang;
+      languageModal.open();
+    }
   }
 
   render() {
@@ -318,16 +359,6 @@ export class LangSelector extends LitElement {
           <span id="lang-name">${currentLang.native} (${currentLang.en})</span>
         </button>
       </div>
-
-      <language-modal
-        .visible=${this.showModal}
-        .languageList=${this.languageList}
-        .currentLang=${this.currentLang}
-        @language-selected=${(e: CustomEvent) =>
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-          this.changeLanguage(e.detail.lang)}
-        @close-modal=${() => (this.showModal = false)}
-      ></language-modal>
     `;
   }
 }
