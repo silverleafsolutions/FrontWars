@@ -1,13 +1,7 @@
 .l-header {
-  background: var(--boxBackgroundColor);
-  backdrop-filter: blur(var(--blur-md));
   display: flex;
   justify-content: center;
-  padding: 24px 24px 12px;
-
-  @media (min-width: 800px) {
-    padding: 24px 24px;
-  }
+  padding: 24px 0;
 }
 
 .l-header__content {
@@ -20,7 +14,7 @@
 }
 
 .l-header__logo {
-  max-width: 450px;
+  max-width: 505px;
   fill: url(#logo-gradient);
   filter: drop-shadow(1px 1px 0px rgb(255, 255, 255))
     drop-shadow(-1px -1px 0px rgb(255, 255, 255))
