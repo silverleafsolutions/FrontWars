@@ -67,7 +67,6 @@ export class LanguageModal extends LitElement {
     return html`
       <o-modal 
         title=${translateText("select_lang.title")}
-        @modal-close=${this.close}
       >
         <div class="language-list">
           ${this.languageList.map((lang) => {
