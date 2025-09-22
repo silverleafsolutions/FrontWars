@@ -8,6 +8,7 @@ import { Layer } from "./Layer";
 import { SendWinnerEvent } from "../../Transport";
 import { CrazySDK } from "../../CrazyGamesSDK";
 import { translateText } from "../../../client/Utils";
+import { GameType } from "../../../core/game/Game";
 
 @customElement("win-modal")
 export class WinModal extends LitElement implements Layer {
@@ -15,6 +16,7 @@ export class WinModal extends LitElement implements Layer {
   public eventBus: EventBus | undefined;
 
   private hasShownDeathModal = false;
+  private privateLobbyId: string | null = null;
 
   @state()
   isVisible = false;
@@ -183,7 +185,12 @@ export class WinModal extends LitElement implements Layer {
 
   private _handleExit() {
     this.hide();
-    window.location.href = "/";
+    // If player was in a private lobby, redirect back to it
+    if (this.privateLobbyId) {
+      CrazySDK.redirectTo(`/#join=${this.privateLobbyId}`);
+    } else {
+      CrazySDK.redirectTo("/");
+    }
   }
 
   init() {}
@@ -200,6 +207,13 @@ export class WinModal extends LitElement implements Layer {
     ) {
       this.hasShownDeathModal = true;
       this._title = translateText("win_modal.died");
+
+      // Check if this is a private lobby and store the lobby ID
+      const gameConfig = this.game.config().gameConfig();
+      if (gameConfig.gameType === GameType.Private) {
+        this.privateLobbyId = this.game.gameID();
+      }
+
       this.show();
     }
     const updates = this.game.updatesSinceLastTick();

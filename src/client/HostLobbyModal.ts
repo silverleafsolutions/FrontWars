@@ -703,9 +703,6 @@ export class HostLobbyModal extends LitElement {
         this.useRandomMap ? " (Randomly selected)" : ""}`,
     );
 
-    // Hide invite button when game starts
-    this.hideInvite();
-
     this.close();
     const config = await getServerConfigFromClient();
     const response = await fetch(
