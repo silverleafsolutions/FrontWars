@@ -7,6 +7,7 @@ import { customElement, query, state } from "lit/decorators.js";
 import { SettingKeybind } from "./components/baseComponents/setting/SettingKeybind";
 import { UserSettings } from "../core/game/UserSettings";
 import { translateText } from "../client/Utils";
+import { CrazySDK } from "./CrazyGamesSDK";
 import { z } from "zod";
 
 const KeybindSchema = z.record(z.string(), z.string());
@@ -546,9 +547,11 @@ export class UserSettingModal extends LitElement {
   public open() {
     this.requestUpdate();
     this.modalEl?.open();
+    CrazySDK.gameplayStop();
   }
 
   public close() {
     this.modalEl?.close();
+    CrazySDK.gameplayStart();
   }
 }

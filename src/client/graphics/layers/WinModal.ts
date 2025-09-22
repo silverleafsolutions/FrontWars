@@ -6,6 +6,7 @@ import { GameView } from "../../../core/game/GameView";
 import { GutterAdModalEvent } from "./GutterAdModal";
 import { Layer } from "./Layer";
 import { SendWinnerEvent } from "../../Transport";
+import { CrazySDK } from "../../CrazyGamesSDK";
 import { translateText } from "../../../client/Utils";
 
 @customElement("win-modal")
@@ -159,6 +160,9 @@ export class WinModal extends LitElement implements Layer {
   }
 
   show() {
+    // Call gameplayStop when match is over
+    CrazySDK.gameplayStop();
+
     this.eventBus?.emit(new GutterAdModalEvent(true));
     setTimeout(() => {
       this.isVisible = true;

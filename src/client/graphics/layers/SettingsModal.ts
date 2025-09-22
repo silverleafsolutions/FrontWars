@@ -5,6 +5,7 @@ import { EventBus } from "../../../core/EventBus";
 import { Layer } from "./Layer";
 import { PauseGameEvent } from "../../Transport";
 import { UserSettings } from "../../../core/game/UserSettings";
+import { CrazySDK } from "../../CrazyGamesSDK";
 import darkModeIcon from "../../../../resources/images/DarkModeIconWhite.svg";
 import emojiIcon from "../../../../resources/images/EmojiIconWhite.svg";
 import exitIcon from "../../../../resources/images/ExitIconWhite.svg";
@@ -51,6 +52,8 @@ export class SettingsModal extends LitElement implements Layer {
       this.shouldPause = event.shouldPause;
       this.wasPausedWhenOpened = event.isPaused;
       this.pauseGame(true);
+      // Call gameplayStop when settings modal opens
+      CrazySDK.gameplayStop();
     });
   }
 
@@ -95,6 +98,8 @@ export class SettingsModal extends LitElement implements Layer {
     this.isVisible = false;
     this.requestUpdate();
     this.pauseGame(false);
+    // Call gameplayStart when settings modal closes and game resumes
+    CrazySDK.gameplayStart();
   }
 
   private pauseGame(pause: boolean) {

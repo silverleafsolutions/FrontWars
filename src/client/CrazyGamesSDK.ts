@@ -52,6 +52,7 @@ class CrazyGamesSDKManager {
   }
 
   gameplayStart(): void {
+    console.log("CrazyGames SDK: gameplayStart");
     try {
       if (this.isCrazyGames && window.CrazyGames?.SDK?.game?.gameplayStart) {
         window.CrazyGames.SDK.game.gameplayStart();
@@ -62,6 +63,7 @@ class CrazyGamesSDKManager {
   }
 
   gameplayStop(): void {
+    console.log("CrazyGames SDK: gameplayStop");
     try {
       if (this.isCrazyGames && window.CrazyGames?.SDK?.game?.gameplayStop) {
         window.CrazyGames.SDK.game.gameplayStop();
