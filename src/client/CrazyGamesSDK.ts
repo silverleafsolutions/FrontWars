@@ -38,6 +38,7 @@ class CrazyGamesSDKManager {
           void CrazySDK.requestResponsiveBanner("cg-banner-right");
           void CrazySDK.requestResponsiveBanner("cg-banner-bottom");
           this.isInitialized = true;
+          this.gameLoadComplete();
         } finally {
           resolve();
         }
@@ -48,7 +49,12 @@ class CrazyGamesSDKManager {
   }
 
   gameLoadComplete(): void {
+    console.log("CrazyGames SDK: gameLoadComplete");
     // no explicit API needed for CrazyGames on load complete
+  }
+
+  isInstantMultiplayer(): boolean {
+    return this.isCrazyGames && window.CrazyGames?.SDK?.game?.isInstantMultiplayer;
   }
 
   gameplayStart(): void {

@@ -389,6 +389,9 @@ class Client {
     // Check for CrazyGames invite parameters on page load
     this.handleInviteParams();
 
+    // Check for CrazyGames instant multiplayer and auto-open host modal
+    this.handleInstantMultiplayer();
+
     const onHashUpdate = () => {
       // Reset the UI to its initial state
       this.joinModal?.close();
@@ -473,6 +476,20 @@ class Client {
     }
   }
 
+  private handleInstantMultiplayer() {
+    if (CrazySDK.isInstantMultiplayer()) {
+      console.log("CrazyGames instant multiplayer detected, opening host modal");
+      // Wait for the UI to be ready and ensure username is valid
+      if (this.usernameInput?.isValid()) {
+        const hostModal = document.querySelector("host-lobby-modal") as HostLobbyModal;
+        if (hostModal) {
+          hostModal.open();
+          this.publicLobby?.leaveLobby();
+        }
+      }
+    }
+  }
+
   private async handleJoinLobby(event: CustomEvent<JoinLobbyEvent>) {
     const lobby = event.detail;
     console.log(`joining lobby ${lobby.gameID}`);
@@ -538,8 +555,6 @@ class Client {
         ) as GameStartingModal;
         startingModal instanceof GameStartingModal;
         startingModal.show();
-        // Notify SDK that load is complete (safe no-op if not CrazyGames)
-        CrazySDK.gameLoadComplete();
       },
       () => {
         this.joinModal?.close();
