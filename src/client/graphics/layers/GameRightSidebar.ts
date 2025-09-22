@@ -8,6 +8,7 @@ import { Layer } from "./Layer";
 import { PauseGameEvent } from "../../Transport";
 import { ShowReplayPanelEvent } from "./ReplayPanel";
 import { ShowSettingsModalEvent } from "./SettingsModal";
+import { CrazySDK } from "../../CrazyGamesSDK";
 import exitIcon from "../../../../resources/images/ExitIconWhite.svg";
 import pauseIcon from "../../../../resources/images/PauseIconWhite.svg";
 import playIcon from "../../../../resources/images/PlayIconWhite.svg";
@@ -95,7 +96,7 @@ export class GameRightSidebar extends LitElement implements Layer {
       if (!isConfirmed) return;
     }
     // redirect to the home page
-    window.location.href = "/";
+    CrazySDK.redirectTo("/");
   }
 
   private onSettingsButtonClick() {

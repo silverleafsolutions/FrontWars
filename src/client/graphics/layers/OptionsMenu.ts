@@ -6,6 +6,7 @@ import { GameType } from "../../../core/game/Game";
 import { GameUpdateType } from "../../../core/game/GameUpdates";
 import { GameView } from "../../../core/game/GameView";
 import { Layer } from "./Layer";
+import { CrazySDK } from "../../CrazyGamesSDK";
 import { PauseGameEvent } from "../../Transport";
 import { UserSettings } from "../../../core/game/UserSettings";
 import { translateText } from "../../Utils";
@@ -81,7 +82,7 @@ export class OptionsMenu extends LitElement implements Layer {
       if (!isConfirmed) return;
     }
     // redirect to the home page
-    window.location.href = "/";
+    CrazySDK.redirectTo("/");
   }
 
   createRenderRoot() {

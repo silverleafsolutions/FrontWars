@@ -173,6 +173,17 @@ class CrazyGamesSDKManager {
       window.CrazyGames.SDK.banner.clearAllBanners();
     }
   }
+
+  redirectTo(url: string): void {
+    if (this.isCrazyGames) {
+      // Parse the URL and add the crazygames parameter
+      const urlObj = new URL(url, window.location.origin);
+      urlObj.searchParams.set("crazygames", "true");
+      window.location.href = urlObj.toString();
+    } else {
+      window.location.href = url;
+    }
+  }
 }
 
 export const CrazySDK = new CrazyGamesSDKManager();

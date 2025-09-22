@@ -151,7 +151,7 @@ export class SettingsModal extends LitElement implements Layer {
 
   private onExitButtonClick() {
     // redirect to the home page
-    window.location.href = "/";
+    CrazySDK.redirectTo("/");
   }
 
   render() {
