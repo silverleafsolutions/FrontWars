@@ -2,7 +2,7 @@ import "./components/Difficulties";
 import "./components/Maps";
 import { LitElement, html } from "lit";
 import { customElement, query } from "lit/decorators.js";
-import { getAltKey, getModifierKey, translateText } from "../client/Utils";
+import { getAltKey, getModifierKey, translateText, isMobileDevice } from "../client/Utils";
 
 @customElement("help-modal")
 export class HelpModal extends LitElement {
@@ -32,6 +32,175 @@ export class HelpModal extends LitElement {
     }
   };
 
+  private renderDesktopControls() {
+    return html`
+      <table>
+        <thead>
+          <tr>
+            <th>${translateText("help_modal.table_key")}</th>
+            <th>${translateText("help_modal.table_action")}</th>
+          </tr>
+        </thead>
+        <tbody class="text-left">
+          <tr>
+            <td><span class="key">Space</span></td>
+            <td>${translateText("help_modal.action_alt_view")}</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="scroll-combo-horizontal">
+                <span class="key">⇧ Shift</span>
+                <span class="plus">+</span>
+                <div class="mouse-shell alt-left-click">
+                  <div class="mouse-left-corner"></div>
+                  <div class="mouse-wheel"></div>
+                </div>
+              </div>
+            </td>
+            <td>${translateText("help_modal.action_attack_altclick")}</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="scroll-combo-horizontal">
+                <span class="key">${getModifierKey()}</span>
+                <span class="plus">+</span>
+                <div class="mouse-shell alt-left-click">
+                  <div class="mouse-left-corner"></div>
+                  <div class="mouse-wheel"></div>
+                </div>
+              </div>
+            </td>
+            <td>${translateText("help_modal.action_build")}</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="scroll-combo-horizontal">
+                <span class="key">${getAltKey()}</span>
+                <span class="plus">+</span>
+                <div class="mouse-shell alt-left-click">
+                  <div class="mouse-left-corner"></div>
+                  <div class="mouse-wheel"></div>
+                </div>
+              </div>
+            </td>
+            <td>${translateText("help_modal.action_emote")}</td>
+          </tr>
+          <tr>
+            <td><span class="key">C</span></td>
+            <td>${translateText("help_modal.action_center")}</td>
+          </tr>
+          <tr>
+            <td><span class="key">Q</span> / <span class="key">E</span></td>
+            <td>${translateText("help_modal.action_zoom")}</td>
+          </tr>
+          <tr>
+            <td>
+              <span class="key">W</span> <span class="key">A</span>
+              <span class="key">S</span> <span class="key">D</span>
+            </td>
+            <td>${translateText("help_modal.action_move_camera")}</td>
+          </tr>
+          <tr>
+            <td><span class="key">1</span> / <span class="key">2</span></td>
+            <td>${translateText("help_modal.action_ratio_change")}</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="scroll-combo-horizontal">
+                <span class="key">⇧ Shift</span>
+                <span class="plus">+</span>
+                <div class="mouse-with-arrows">
+                  <div class="mouse-shell">
+                    <div class="mouse-wheel" id="highlighted-wheel"></div>
+                  </div>
+                  <div class="mouse-arrows-side">
+                    <div class="arrow">↑</div>
+                    <div class="arrow">↓</div>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td>${translateText("help_modal.action_ratio_change")}</td>
+          </tr>
+          <tr>
+            <td>
+              <span class="key">${getAltKey()}</span> +
+              <span class="key">R</span>
+            </td>
+            <td>${translateText("help_modal.action_reset_gfx")}</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="mouse-shell">
+                <div class="mouse-wheel" id="highlighted-wheel"></div>
+              </div>
+            </td>
+            <td>${translateText("help_modal.action_auto_upgrade")}</td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+  }
+
+  private renderMobileControls() {
+    return html`
+      <table>
+        <thead>
+          <tr>
+            <th>${translateText("help_modal.mobile_touch")}</th>
+            <th>${translateText("help_modal.table_action")}</th>
+          </tr>
+        </thead>
+        <tbody class="text-left">
+          <tr>
+            <td><span class="key">${translateText("help_modal.mobile_tap")}</span></td>
+            <td>${translateText("help_modal.mobile_action_alt_view")}</td>
+          </tr>
+          <tr>
+            <td><span class="key">${translateText("help_modal.mobile_tap")}</span></td>
+            <td>${translateText("help_modal.mobile_action_attack")}</td>
+          </tr>
+          <tr>
+            <td><span class="key">${translateText("help_modal.mobile_tap_and_hold")}</span></td>
+            <td>${translateText("help_modal.mobile_action_build")}</td>
+          </tr>
+          <tr>
+            <td><span class="key">${translateText("help_modal.mobile_double_tap")}</span></td>
+            <td>${translateText("help_modal.mobile_action_emote")}</td>
+          </tr>
+          <tr>
+            <td><span class="key">${translateText("help_modal.mobile_tap")}</span></td>
+            <td>${translateText("help_modal.mobile_action_center")}</td>
+          </tr>
+          <tr>
+            <td><span class="key">${translateText("help_modal.mobile_pinch")}</span></td>
+            <td>${translateText("help_modal.mobile_action_zoom")}</td>
+          </tr>
+          <tr>
+            <td><span class="key">${translateText("help_modal.mobile_swipe")}</span></td>
+            <td>${translateText("help_modal.mobile_action_move_camera")}</td>
+          </tr>
+          <tr>
+            <td><span class="key">${translateText("help_modal.mobile_tap")}</span></td>
+            <td>${translateText("help_modal.mobile_action_ratio_change")}</td>
+          </tr>
+          <tr>
+            <td><span class="key">${translateText("help_modal.mobile_tap_and_hold")}</span></td>
+            <td>${translateText("help_modal.mobile_action_reset_gfx")}</td>
+          </tr>
+          <tr>
+            <td><span class="key">${translateText("help_modal.mobile_tap")}</span></td>
+            <td>${translateText("help_modal.mobile_action_auto_upgrade")}</td>
+          </tr>
+          <tr>
+            <td><span class="key">${translateText("help_modal.mobile_tap_and_hold")}</span></td>
+            <td>${translateText("help_modal.mobile_action_radial_menu")}</td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+  }
+
   render() {
     return html`
       <o-modal
@@ -41,113 +210,9 @@ export class HelpModal extends LitElement {
       >
         <div class="flex flex-col items-center">
           <div class="text-center text-2xl font-bold mb-4">
-            ${translateText("help_modal.hotkeys")}
+            ${isMobileDevice() ? translateText("help_modal.mobile_controls") : translateText("help_modal.hotkeys")}
           </div>
-          <table>
-            <thead>
-              <tr>
-                <th>${translateText("help_modal.table_key")}</th>
-                <th>${translateText("help_modal.table_action")}</th>
-              </tr>
-            </thead>
-            <tbody class="text-left">
-              <tr>
-                <td><span class="key">Space</span></td>
-                <td>${translateText("help_modal.action_alt_view")}</td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="scroll-combo-horizontal">
-                    <span class="key">⇧ Shift</span>
-                    <span class="plus">+</span>
-                    <div class="mouse-shell alt-left-click">
-                      <div class="mouse-left-corner"></div>
-                      <div class="mouse-wheel"></div>
-                    </div>
-                  </div>
-                </td>
-                <td>${translateText("help_modal.action_attack_altclick")}</td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="scroll-combo-horizontal">
-                    <span class="key">${getModifierKey()}</span>
-                    <span class="plus">+</span>
-                    <div class="mouse-shell alt-left-click">
-                      <div class="mouse-left-corner"></div>
-                      <div class="mouse-wheel"></div>
-                    </div>
-                  </div>
-                </td>
-                <td>${translateText("help_modal.action_build")}</td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="scroll-combo-horizontal">
-                    <span class="key">${getAltKey()}</span>
-                    <span class="plus">+</span>
-                    <div class="mouse-shell alt-left-click">
-                      <div class="mouse-left-corner"></div>
-                      <div class="mouse-wheel"></div>
-                    </div>
-                  </div>
-                </td>
-                <td>${translateText("help_modal.action_emote")}</td>
-              </tr>
-              <tr>
-                <td><span class="key">C</span></td>
-                <td>${translateText("help_modal.action_center")}</td>
-              </tr>
-              <tr>
-                <td><span class="key">Q</span> / <span class="key">E</span></td>
-                <td>${translateText("help_modal.action_zoom")}</td>
-              </tr>
-              <tr>
-                <td>
-                  <span class="key">W</span> <span class="key">A</span>
-                  <span class="key">S</span> <span class="key">D</span>
-                </td>
-                <td>${translateText("help_modal.action_move_camera")}</td>
-              </tr>
-              <tr>
-                <td><span class="key">1</span> / <span class="key">2</span></td>
-                <td>${translateText("help_modal.action_ratio_change")}</td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="scroll-combo-horizontal">
-                    <span class="key">⇧ Shift</span>
-                    <span class="plus">+</span>
-                    <div class="mouse-with-arrows">
-                      <div class="mouse-shell">
-                        <div class="mouse-wheel" id="highlighted-wheel"></div>
-                      </div>
-                      <div class="mouse-arrows-side">
-                        <div class="arrow">↑</div>
-                        <div class="arrow">↓</div>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td>${translateText("help_modal.action_ratio_change")}</td>
-              </tr>
-              <tr>
-                <td>
-                  <span class="key">${getAltKey()}</span> +
-                  <span class="key">R</span>
-                </td>
-                <td>${translateText("help_modal.action_reset_gfx")}</td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="mouse-shell">
-                    <div class="mouse-wheel" id="highlighted-wheel"></div>
-                  </div>
-                </td>
-                <td>${translateText("help_modal.action_auto_upgrade")}</td>
-              </tr>
-            </tbody>
-          </table>
+          ${isMobileDevice() ? this.renderMobileControls() : this.renderDesktopControls()}
         </div>
 
         <hr class="mt-6 mb-4" />

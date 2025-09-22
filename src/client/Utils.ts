@@ -57,7 +57,6 @@ export function generateCryptoRandomUUID(): string {
 
   // Fallback using crypto.getRandomValues
   if (crypto !== undefined && "getRandomValues" in crypto) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
     return (([1e7] as any) + -1e3 + -4e3 + -8e3 + -1e11).replace(
       /[018]/g,
       (c: number): string =>
@@ -84,11 +83,9 @@ export const translateText = (
   key: string,
   params: Record<string, string | number> = {},
 ): string => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const self = translateText as any;
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   self.formatterCache ??= new Map();
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   self.lastLang ??= null;
 
   const langSelector = document.querySelector("lang-selector") as LangSelector;
@@ -104,11 +101,8 @@ export const translateText = (
     return key;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   if (self.lastLang !== langSelector.currentLang) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     self.formatterCache.clear();
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     self.lastLang = langSelector.currentLang;
   }
 
@@ -129,16 +123,14 @@ export const translateText = (
         ? "en"
         : langSelector.currentLang;
     const cacheKey = `${key}:${locale}:${message}`;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     let formatter = self.formatterCache.get(cacheKey);
 
     if (!formatter) {
       formatter = new IntlMessageFormat(message, locale);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       self.formatterCache.set(cacheKey, formatter);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     return formatter.format(params) as string;
   } catch (e) {
     console.warn("ICU format error", e);
@@ -234,4 +226,30 @@ export function incrementGamesPlayed(): void {
   } catch (error) {
     console.warn("Failed to increment games played in localStorage:", error);
   }
+}
+
+/**
+ * Detects if the current device is mobile, tablet, or iPad with desktop view enabled
+ * @returns true if the device should use mobile controls
+ */
+export function isMobileDevice(): boolean {
+  // Check for touch capability
+  const hasTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+
+  // Check user agent for mobile devices
+  const userAgent = navigator.userAgent.toLowerCase();
+  const isMobileUA = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
+
+  // Check for iPad specifically (even with desktop view enabled)
+  const isIPad = /ipad/i.test(userAgent) ||
+    (navigator.maxTouchPoints > 1 && /macintosh/i.test(userAgent));
+
+  // Check screen size for tablets and mobile devices
+  const isSmallScreen = window.innerWidth <= 1024 || window.innerHeight <= 768;
+
+  // Consider it mobile if:
+  // 1. Has touch capability AND (mobile user agent OR small screen)
+  // 2. Is iPad (even with desktop view)
+  // 3. Is a small screen device with touch
+  return (hasTouch && (isMobileUA || isSmallScreen)) || isIPad;
 }
