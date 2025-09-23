@@ -1,7 +1,18 @@
 declare global {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Window {
-    CrazyGames: any;
+    CrazyGames: {
+      SDK: {
+        ad: any;
+        banner: any;
+        game: any;
+        user: {
+          getUser: () => Promise<{ username: string, profilePictureUrl: string } | null>;
+        };
+        data: any;
+        init: () => Promise<void>;
+      };
+    };
   }
 }
 
@@ -22,12 +33,29 @@ function isWithinCrazyGames(): boolean {
 class CrazyGamesSDKManager {
   public readonly isCrazyGames: boolean = isWithinCrazyGames();
   private isInitialized = false;
+  private loadPromise: Promise<void> | null = null;
 
   async init(): Promise<void> {
     console.log("[CrazyGames SDK] isCrazyGames: ", this.isCrazyGames);
-    if (!this.isCrazyGames || this.isInitialized) return;
+    await this.waitForLoad();
+  }
 
-    await new Promise<void>((resolve, reject) => {
+  waitForLoad(): Promise<void> {
+    if (!this.isCrazyGames) {
+      return Promise.resolve();
+    }
+
+    if (this.isInitialized) {
+      return Promise.resolve();
+    }
+
+    if (this.loadPromise) {
+      return this.loadPromise;
+    }
+
+    // If we're in CrazyGames but the SDK isn't loaded yet, create a promise
+    // that will be resolved when init is called
+    this.loadPromise = new Promise<void>((resolve, reject) => {
       const script = document.createElement("script");
       script.src = "https://sdk.crazygames.com/crazygames-sdk-v3.js";
       script.addEventListener("load", async () => {
@@ -46,11 +74,26 @@ class CrazyGamesSDKManager {
       script.addEventListener("error", () => reject(new Error("CrazyGames SDK load error")));
       document.head.appendChild(script);
     });
+
+    return this.loadPromise;
   }
 
   gameLoadComplete(): void {
     console.log("CrazyGames SDK: gameLoadComplete");
     // no explicit API needed for CrazyGames on load complete
+  }
+
+  async getUsername(): Promise<string> {
+    // Wait for the SDK to load before attempting to get username
+    await this.waitForLoad();
+
+    if (!this.isCrazyGames || !window.CrazyGames) {
+      return "";
+    }
+
+    const user = await window.CrazyGames.SDK.user.getUser();
+    console.log("[CrazyGames SDK] user", user);
+    return user?.username || "";
   }
 
   isInstantMultiplayer(): boolean {

@@ -7,6 +7,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import { UserSettings } from "../core/game/UserSettings";
 import { translateText } from "../client/Utils";
 import { v4 as uuidv4 } from "uuid";
+import { CrazySDK } from "./CrazyGamesSDK";
 
 const usernameKey = "username";
 
@@ -28,9 +29,9 @@ export class UsernameInput extends LitElement {
     return this.username;
   }
 
-  connectedCallback() {
+  async connectedCallback() {
     super.connectedCallback();
-    this.username = this.getStoredUsername();
+    this.username = await this.getStoredUsername();
     this.dispatchUsernameEvent();
   }
 
@@ -74,8 +75,15 @@ export class UsernameInput extends LitElement {
     }
   }
 
-  private getStoredUsername(): string {
+  private async getStoredUsername(): Promise<string> {
     const storedUsername = localStorage.getItem(usernameKey);
+    if (CrazySDK.isCrazyGames && !(storedUsername && !storedUsername.includes("Anon"))) {
+      const username = await CrazySDK.getUsername();
+      if (username) {
+        this.storeUsername(username);
+        return username;
+      }
+    }
     if (storedUsername) {
       return storedUsername;
     }
