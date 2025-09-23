@@ -102,7 +102,7 @@ export async function startWorker() {
         log.warn("cannot create game, id not found");
         return res.status(400).json({ error: "Game ID is required" });
       }
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
       const clientIP = req.ip || req.socket.remoteAddress || "unknown";
       const result = CreateGameInputSchema.safeParse(req.body);
       if (!result.success) {
@@ -162,7 +162,6 @@ export async function startWorker() {
         return;
       }
       if (game.isPublic()) {
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         const clientIP = req.ip || req.socket.remoteAddress || "unknown";
         log.info(
           `cannot start public game ${game.id}, game is public, ip: ${ipAnonymize(clientIP)}`,
@@ -194,7 +193,7 @@ export async function startWorker() {
         return res.status(400).json({ error: "Game not found" });
       }
       if (game.isPublic()) {
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
         const clientIP = req.ip || req.socket.remoteAddress || "unknown";
         log.warn(
           `cannot update public game ${game.id}, ip: ${ipAnonymize(clientIP)}`,
@@ -322,7 +321,7 @@ export async function startWorker() {
     );
 
     ws.on("error", (error: Error) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+
       if ((error as any).code === "WS_ERR_UNEXPECTED_RSV_1") {
         ws.close(1002, "WS_ERR_UNEXPECTED_RSV_1");
       }

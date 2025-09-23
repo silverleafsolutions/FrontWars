@@ -62,9 +62,12 @@ class CrazyGamesSDKManager {
         try {
           await window.CrazyGames.SDK.init();
           // Request responsive banners for menu
-          void CrazySDK.requestResponsiveBanner("cg-banner-left");
+          // void CrazySDK.requestResponsiveBanner("cg-banner-left");
+          // void CrazySDK.requestResponsiveBanner("cg-banner-bottom");
           void CrazySDK.requestResponsiveBanner("cg-banner-right");
-          void CrazySDK.requestResponsiveBanner("cg-banner-bottom");
+          setInterval(() => {
+            void CrazySDK.requestResponsiveBanner("cg-banner-right");
+          }, 60000);
           this.isInitialized = true;
           this.gameLoadComplete();
         } finally {
