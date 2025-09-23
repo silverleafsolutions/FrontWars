@@ -24,6 +24,7 @@ import { UsernameInput } from "./UsernameInput";
 import randomMap from "../../resources/images/RandomMap.webp";
 import { renderUnitTypeOptions } from "./utilities/RenderUnitTypeOptions";
 import { translateText } from "../client/Utils";
+import { CrazySDK } from "./CrazyGamesSDK";
 
 @customElement("single-player-modal")
 export class SinglePlayerModal extends LitElement {
@@ -324,7 +325,7 @@ export class SinglePlayerModal extends LitElement {
 
         <o-button
           title=${translateText("single_modal.start")}
-          @click=${this.startGame}
+          @click=${this.onStartButtonClick}
           blockDesktop
         ></o-button>
       </o-modal>
@@ -400,6 +401,16 @@ export class SinglePlayerModal extends LitElement {
     this.disabledUnits = checked
       ? [...this.disabledUnits, unit]
       : this.disabledUnits.filter((u) => u !== unit);
+  }
+
+  private onStartButtonClick() {
+    if (CrazySDK.isCrazyGames) {
+      CrazySDK.requestMidGameAd(() => {
+        this.startGame();
+      });
+    } else {
+      this.startGame();
+    }
   }
 
   private startGame() {

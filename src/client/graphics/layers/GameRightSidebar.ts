@@ -96,7 +96,13 @@ export class GameRightSidebar extends LitElement implements Layer {
       if (!isConfirmed) return;
     }
     // redirect to the home page
-    CrazySDK.redirectTo("/");
+    if (CrazySDK.isCrazyGames) {
+      CrazySDK.requestMidGameAd(() => {
+        CrazySDK.redirectTo("/");
+      });
+    } else {
+      window.location.href = "/";
+    }
   }
 
   private onSettingsButtonClick() {
