@@ -88,18 +88,7 @@
         display: none;
       }
 
-      /* Hide side banners on small screens */
-      @media (max-width: 1180px) {
-        #cg-banner-left {
-          display: none !important;
-        }
-      }
-      @media (max-width: 928px) {
-        #cg-banner-left,
-        #cg-banner-right {
-          display: none !important;
-        }
-      }
+      /* Hide side banners on small screens - handled by JavaScript for scale-aware behavior */
 
       /* Scale container based on screen height */
       .scale-container {
@@ -527,14 +516,43 @@
           if (!container) return;
           var scale = computeScale();
           container.style.transform = "scale(" + scale + ")";
+          updateBannerVisibility(scale);
+        }
+
+        function updateBannerVisibility(scale) {
+          var leftBanner = document.getElementById("cg-banner-left");
+          var rightBanner = document.getElementById("cg-banner-right");
+
+          if (!leftBanner || !rightBanner) return;
+
+          var width =
+            Math.max(
+              document.documentElement.clientWidth,
+              window.innerWidth || 0,
+            ) / scale;
+
+          // Calculate scaled breakpoints
+          var leftBannerBreakpoint = 980 / scale;
+          var bothBannersBreakpoint = 720 / scale;
+
+          if (width <= bothBannersBreakpoint) {
+            // Hide both banners
+            leftBanner.style.display = "none";
+            rightBanner.style.display = "none";
+          } else if (width <= leftBannerBreakpoint) {
+            // Hide only left banner
+            leftBanner.style.display = "none";
+            rightBanner.style.display = "block";
+          } else {
+            // Show both banners
+            leftBanner.style.display = "block";
+            rightBanner.style.display = "block";
+          }
         }
 
         function onResize() {
-          if (ticking) return;
-          ticking = true;
           requestAnimationFrame(function () {
             applyScale();
-            ticking = false;
           });
         }
 
