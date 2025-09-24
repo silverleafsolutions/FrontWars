@@ -5,7 +5,15 @@ declare global {
       SDK: {
         ad: any;
         banner: any;
-        game: any;
+        game: {
+          isInstantMultiplayer: boolean;
+          gameplayStart: () => void;
+          gameplayStop: () => void;
+          inviteLink: (params: Record<string, any>, callback: (error: any, link: string) => void) => void;
+          showInviteButton: (params: Record<string, any>, callback: (error: any, link: string) => void) => void;
+          hideInviteButton: () => void;
+          getInviteParam: (param: string, callback: (error: any, value: string) => void) => void;
+        };
         user: {
           getUser: () => Promise<{ username: string, profilePictureUrl: string } | null>;
         };
@@ -99,8 +107,10 @@ class CrazyGamesSDKManager {
     return user?.username || "";
   }
 
-  isInstantMultiplayer(): boolean {
-    return this.isCrazyGames && window.CrazyGames?.SDK?.game?.isInstantMultiplayer;
+  async isInstantMultiplayer(): Promise<boolean> {
+    await this.waitForLoad();
+
+    return this.isCrazyGames && window.CrazyGames.SDK.game.isInstantMultiplayer;
   }
 
   gameplayStart(): void {

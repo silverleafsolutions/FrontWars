@@ -476,8 +476,11 @@ class Client {
     }
   }
 
-  private handleInstantMultiplayer() {
-    if (CrazySDK.isInstantMultiplayer()) {
+  private async handleInstantMultiplayer() {
+    if (!CrazySDK.isCrazyGames) return;
+
+    const isInstantMultiplayer = await CrazySDK.isInstantMultiplayer();
+    if (isInstantMultiplayer) {
       console.log("CrazyGames instant multiplayer detected, opening host modal");
       // Wait for the UI to be ready and ensure username is valid
       if (this.usernameInput?.isValid()) {
@@ -560,9 +563,6 @@ class Client {
         this.joinModal?.close();
         this.publicLobby?.stop();
         incrementGamesPlayed();
-
-        // Gameplay started
-        CrazySDK.gameplayStart();
 
         try {
           window.PageOS.session.newPageView();
