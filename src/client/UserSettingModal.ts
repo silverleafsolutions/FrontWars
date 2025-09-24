@@ -547,11 +547,9 @@ export class UserSettingModal extends LitElement {
   public open() {
     this.requestUpdate();
     this.modalEl?.open();
-    CrazySDK.gameplayStop();
   }
 
   public close() {
     this.modalEl?.close();
-    CrazySDK.gameplayStart();
   }
 }

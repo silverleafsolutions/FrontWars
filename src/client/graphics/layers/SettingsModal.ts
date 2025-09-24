@@ -53,6 +53,7 @@ export class SettingsModal extends LitElement implements Layer {
       this.wasPausedWhenOpened = event.isPaused;
       this.pauseGame(true);
       // Call gameplayStop when settings modal opens
+      console.log("[SettingsModal.init]:  gameplayStop");
       CrazySDK.gameplayStop();
     });
   }
@@ -92,6 +93,8 @@ export class SettingsModal extends LitElement implements Layer {
   public openModal() {
     this.isVisible = true;
     this.requestUpdate();
+    console.log("[SettingsModal.openModal]: gameplayStop");
+    CrazySDK.gameplayStop();
   }
 
   public closeModal() {
@@ -99,6 +102,7 @@ export class SettingsModal extends LitElement implements Layer {
     this.requestUpdate();
     this.pauseGame(false);
     // Call gameplayStart when settings modal closes and game resumes
+    console.log("[SettingsModal.closeModal]: gameplayStart");
     CrazySDK.gameplayStart();
   }
 

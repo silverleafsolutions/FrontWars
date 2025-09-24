@@ -579,6 +579,8 @@ class Client {
         }
       },
     );
+
+    CrazySDK.gameplayStart();
   }
 
   private async handleLeaveLobby(/* event: CustomEvent */) {

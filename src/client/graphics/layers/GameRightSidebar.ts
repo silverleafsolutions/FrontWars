@@ -97,6 +97,7 @@ export class GameRightSidebar extends LitElement implements Layer {
     }
     // redirect to the home page
     if (CrazySDK.isCrazyGames) {
+      CrazySDK.gameplayStop();
       CrazySDK.requestMidGameAd(() => {
         CrazySDK.redirectTo("/");
       });
