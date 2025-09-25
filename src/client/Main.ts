@@ -577,10 +577,10 @@ class Client {
         if (lobby.gameStartInfo?.config.gameType !== GameType.Singleplayer) {
           history.pushState(null, "", `#join=${lobby.gameID}`);
         }
+
+        CrazySDK.gameplayStart();
       },
     );
-
-    CrazySDK.gameplayStart();
   }
 
   private async handleLeaveLobby(/* event: CustomEvent */) {
