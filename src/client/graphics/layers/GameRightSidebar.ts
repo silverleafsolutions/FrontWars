@@ -16,6 +16,8 @@ import replayRegularIcon from "../../../../resources/images/ReplayRegularIconWhi
 import replaySolidIcon from "../../../../resources/images/ReplaySolidIconWhite.svg";
 import settingsIcon from "../../../../resources/images/SettingIconWhite.svg";
 import { translateText } from "../../Utils";
+import { GameInfo, GameInfoSchema } from "../../../core/Schemas";
+import { getServerConfigFromClient } from "../../../core/configuration/ConfigLoader";
 
 @customElement("game-right-sidebar")
 export class GameRightSidebar extends LitElement implements Layer {
@@ -37,7 +39,14 @@ export class GameRightSidebar extends LitElement implements Layer {
   @state()
   private timer = 0;
 
+  @state()
+  private lobbySize = 0;
+
+  @state()
+  private isPrivateLobby = false;
+
   private hasWinner = false;
+  private playersInterval: ReturnType<typeof setInterval> | null = null;
 
   createRenderRoot() {
     return this;
@@ -48,6 +57,15 @@ export class GameRightSidebar extends LitElement implements Layer {
       this.game?.config()?.gameConfig()?.gameType === GameType.Singleplayer ||
       (this.game?.config().isReplay() ?? false);
     this._isVisible = true;
+
+    // Check if this is a private lobby and start polling
+    const gameType = this.game?.config()?.gameConfig()?.gameType;
+    this.isPrivateLobby = gameType === GameType.Private;
+
+    if (this.isPrivateLobby) {
+      this.startPolling();
+    }
+
     this.requestUpdate();
   }
 
@@ -112,6 +130,48 @@ export class GameRightSidebar extends LitElement implements Layer {
     );
   }
 
+  private startPolling() {
+    if (this.playersInterval) {
+      clearInterval(this.playersInterval);
+    }
+    this.playersInterval = setInterval(() => this.pollPlayers(), 1000);
+  }
+
+  private stopPolling() {
+    if (this.playersInterval) {
+      clearInterval(this.playersInterval);
+      this.playersInterval = null;
+    }
+  }
+
+  public async pollPlayers() {
+    if (!this.game?.gameID()) return;
+    const config = await getServerConfigFromClient();
+
+    fetch(
+      `/${config.workerPath(this.game.gameID())}/api/game/${this.game.gameID()}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    )
+      .then((response) => response.json())
+      .then(GameInfoSchema.parse)
+      .then((data: GameInfo) => {
+        this.lobbySize = data.clients?.length ?? 0;
+      })
+      .catch((error) => {
+        console.error("Error polling players:", error);
+      });
+  }
+
+  disconnectedCallback() {
+    this.stopPolling();
+    super.disconnectedCallback();
+  }
+
   render() {
     if (this.game === undefined) return html``;
 
@@ -155,6 +215,20 @@ export class GameRightSidebar extends LitElement implements Layer {
             ${this.secondsToHms(this.timer)}
           </div>
         </div>
+        
+        <!-- Lobby size display (only show in private lobbies) -->
+        ${this.isPrivateLobby ? html`
+          <div class="flex justify-center items-center mt-2">
+            <div
+              class="w-[70px] h-6 lg:w-24 lg:h-8 border border-slate-400 p-0.5
+              text-xs md:text-sm lg:text-base flex items-center justify-center
+              text-white px-1 bg-slate-700/50"
+              title="Players in private lobby"
+            >
+              Lobby: ${this.lobbySize}
+            </div>
+          </div>
+        ` : ""}
       </aside>
     `;
   }
