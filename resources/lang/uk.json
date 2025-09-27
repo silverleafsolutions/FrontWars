@@ -9,7 +9,7 @@
     "close": "Закрити"
   },
   "main": {
-    "title": "OpenFront (АЛЬФА)",
+    "title": "FrontWars (АЛЬФА)",
     "join_discord": "Приєднуйтеся до Discord!",
     "login_discord": "Увійти з Discord",
     "checking_login": "Перевірка входу...",
@@ -569,8 +569,8 @@
       "cursor": "Вказівник",
       "hand": "Рука",
       "radiation": "Радіація",
-      "openfront_qr": "QR-код OpenFront.io",
-      "openfront": "OpenFront",
+      "openfront_qr": "QR-код FrontWars.io",
+      "openfront": "FrontWars",
       "t_rex": "Тиранозавр",
       "embelem": "Емблема",
       "grogu_head": "Голова Ґроґу",

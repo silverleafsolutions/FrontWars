@@ -9,7 +9,7 @@
     "close": "Fermi"
   },
   "main": {
-    "title": "OpenFront (ALFA)",
+    "title": "FrontWars (ALFA)",
     "join_discord": "Kunigu la Discord-servilon !",
     "login_discord": "Ensaluti kun Diskordo",
     "checking_login": "Kontrolado de la ensaluto...",
@@ -569,8 +569,8 @@
       "cursor": "Kursoro",
       "hand": "Mano",
       "radiation": "Radiado",
-      "openfront_qr": "OpenFront.io QR-kodo",
-      "openfront": "OpenFront",
+      "openfront_qr": "FrontWars.io QR-kodo",
+      "openfront": "FrontWars",
       "t_rex": "Tiranosaŭro",
       "embelem": "Emblemo",
       "grogu_head": "Grogu Kapo",

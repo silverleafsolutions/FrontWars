@@ -9,7 +9,7 @@
     "close": "Zapri"
   },
   "main": {
-    "title": "OpenFront (Alfa)",
+    "title": "FrontWars (Alfa)",
     "join_discord": "Pridruži se našemu Discord serverju!",
     "login_discord": "Prijava z Discord računom",
     "checking_login": "Preverjanje prijave...",
@@ -569,8 +569,8 @@
       "cursor": "Kazalnik",
       "hand": "Roka",
       "radiation": "Radiacija",
-      "openfront_qr": "OpenFront.io QR koda",
-      "openfront": "OpenFront",
+      "openfront_qr": "FrontWars.io QR koda",
+      "openfront": "FrontWars",
       "t_rex": "T-Rex",
       "embelem": "Grb",
       "grogu_head": "Groguva glava",
