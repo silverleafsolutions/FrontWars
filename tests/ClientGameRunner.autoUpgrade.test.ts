@@ -1,22 +1,98 @@
 /**
  * @jest-environment jsdom
  */
+
+// Mock 'jose' first to avoid ESM parsing issues when dependent modules import it.
+jest.mock("jose", () => ({
+  // Provide only the pieces referenced in code (e.g., base64url encode/decode)
+  base64url: {
+    encode: () => "",
+    decode: () => new Uint8Array(),
+  },
+}));
+
+// Mock 'nanoid' (ESM) to prevent Jest ESM parse errors.
+jest.mock("nanoid", () => ({
+  customAlphabet: () => () => "mockid",
+  nanoid: () => "mockid",
+}));
+
+// Minimal mocks for ESM-only lit packages so importing client code doesn't break Jest CommonJS transforms.
+jest.mock("lit", () => ({
+  LitElement: class {},
+  css: () => ({ cssText: "" }),
+  html: () => "",
+}));
+jest.mock("lit/decorators.js", () => ({
+  customElement: () => () => {},
+  state: () => () => {},
+  property: () => () => {}, // Needed by components like GoogleAdElement
+}));
+
+// Mock Main.ts to avoid executing heavy UI bootstrap & side-effect imports (e.g., GoogleAdElement)
+jest.mock("../src/client/Main", () => ({
+  getPersistentID: () => "persistent-id-test",
+}));
+
+// Directly mock GoogleAdElement in case something else loads it
+jest.mock("../src/client/GoogleAdElement", () => ({}));
+
+// Mock TerrainMapFileLoader to avoid importing version.txt
+jest.mock("../src/client/TerrainMapFileLoader", () => ({
+  terrainMapFileLoader: {},
+}));
+
+// Mock GameView to prevent pulling in deep dependencies.
+jest.mock("../src/core/game/GameView", () => ({
+  GameView: class {},
+  PlayerView: class {},
+}));
+
+// Mock Transport (root cause chain importing jose). Provide only the pieces ClientGameRunner references.
+jest.mock("../src/client/Transport", () => {
+  class SendUpgradeStructureIntentEvent {
+    constructor(public readonly unitId: number, public readonly unitType: any) {}
+  }
+  return {
+    SendUpgradeStructureIntentEvent,
+    SendHashEvent: class {},
+    SendAttackIntentEvent: class {},
+    SendBoatAttackIntentEvent: class {},
+    SendSpawnIntentEvent: class {},
+    Transport: class {
+      public isLocal = true;
+      joinGame() {}
+      connect() {}
+      leaveGame() {}
+      turnComplete() {}
+    },
+  };
+});
+
+// Mock GameRenderer to avoid DOM querying.
+jest.mock("../src/client/graphics/GameRenderer", () => ({
+  createRenderer: () => ({
+    initialize: jest.fn(),
+    tick: jest.fn(),
+    uiState: { attackRatio: 20 },
+    transformHandler: {
+      screenToWorldCoordinates: (x: number, y: number) => ({
+        x: Math.floor(x / 10),
+        y: Math.floor(y / 10),
+      }),
+    },
+  }),
+  GameRenderer: class {},
+}));
+
 import { EventBus } from "../src/core/EventBus";
 import { AutoUpgradeEvent } from "../src/client/InputHandler";
 import { ClientGameRunner } from "../src/client/ClientGameRunner";
 import { UnitType } from "../src/core/game/Game";
 import { SendUpgradeStructureIntentEvent } from "../src/client/Transport";
 
-// Focus: verify autoUpgradeEvent emits correct number of SendUpgradeStructureIntentEvent instances
-// for multi-level (shift) upgrades based on player gold affordability.
-
 class MockPlayerView {
-  private readonly _gold: bigint;
-  private readonly _actions: any;
-  constructor(gold: bigint, actions: any) {
-    this._gold = gold;
-    this._actions = actions;
-  }
+  constructor(private readonly _gold: bigint, private readonly _actions: any) {}
   gold() { return this._gold; }
   troops() { return 0; }
   actions(_: any) { return Promise.resolve(this._actions); }
@@ -27,7 +103,10 @@ const mockRenderer: any = {
   initialize: jest.fn(),
   tick: jest.fn(),
   transformHandler: {
-    screenToWorldCoordinates: (x: number, y: number) => ({ x: Math.floor(x / 10), y: Math.floor(y / 10) }),
+    screenToWorldCoordinates: (x: number, y: number) => ({
+      x: Math.floor(x / 10),
+      y: Math.floor(y / 10),
+    }),
   },
 };
 
@@ -75,8 +154,8 @@ describe("ClientGameRunner autoUpgradeEvent", () => {
     const unitId = 42;
     const costPerLevel = 10n;
     const gold = 200n; // sufficient for >10
-    const actions = buildActions(unitId, costPerLevel, UnitType.House);
-    const gameView = makeGameView(unitId, UnitType.House, 1);
+    const actions = buildActions(unitId, costPerLevel, UnitType.City);
+    const gameView = makeGameView(unitId, UnitType.City, 1);
     gameView.playerByClientID = () => new MockPlayerView(gold, actions);
 
     const emitted: SendUpgradeStructureIntentEvent[] = [];
@@ -97,8 +176,8 @@ describe("ClientGameRunner autoUpgradeEvent", () => {
     const unitId = 77;
     const costPerLevel = 10n;
     const gold = 70n; // only 7 affordable
-    const actions = buildActions(unitId, costPerLevel, UnitType.House);
-    const gameView = makeGameView(unitId, UnitType.House, 2);
+    const actions = buildActions(unitId, costPerLevel, UnitType.City);
+    const gameView = makeGameView(unitId, UnitType.City, 2);
     gameView.playerByClientID = () => new MockPlayerView(gold, actions);
 
     const emitted: SendUpgradeStructureIntentEvent[] = [];
@@ -119,8 +198,8 @@ describe("ClientGameRunner autoUpgradeEvent", () => {
     const unitId = 5;
     const costPerLevel = 10n;
     const gold = 5n; // cannot afford a single level => fallback path
-    const actions = buildActions(unitId, costPerLevel, UnitType.House);
-    const gameView = makeGameView(unitId, UnitType.House, 1);
+    const actions = buildActions(unitId, costPerLevel, UnitType.City);
+    const gameView = makeGameView(unitId, UnitType.City, 1);
     gameView.playerByClientID = () => new MockPlayerView(gold, actions);
 
     const emitted: SendUpgradeStructureIntentEvent[] = [];
